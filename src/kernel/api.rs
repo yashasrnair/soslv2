@@ -18,6 +18,7 @@ struct Incoming {
 #[derive(Serialize)]
 struct Outgoing {
     decision: String,
+    risk: i32,
 }
 
 pub fn start_api() {
@@ -26,32 +27,52 @@ pub fn start_api() {
 
     for mut request in server.incoming_requests() {
 
-        // 🔥 ROUTE CHECK
+        // CORS pre-flight or invalid route
         if request.url() != "/check" {
-            request.respond(Response::from_string("Invalid route")).unwrap();
+            let _ = request.respond(
+                Response::from_string(r#"{"error":"Invalid route. Use POST /check"}"#)
+                    .with_header(Header::from_bytes("Content-Type", "application/json").unwrap())
+                    .with_status_code(404)
+            );
             continue;
         }
 
         let mut content = String::new();
 
         if request.as_reader().read_to_string(&mut content).is_err() {
-            request.respond(Response::from_string("Invalid request")).unwrap();
+            let _ = request.respond(
+                Response::from_string(r#"{"error":"Failed to read request body"}"#)
+                    .with_header(Header::from_bytes("Content-Type", "application/json").unwrap())
+                    .with_status_code(400)
+            );
             continue;
         }
 
         let parsed: Incoming = match serde_json::from_str(&content) {
             Ok(data) => data,
-            Err(_) => {
-                request.respond(Response::from_string("Invalid JSON")).unwrap();
+            Err(e) => {
+                eprintln!("[API] JSON parse error: {}", e);
+                let _ = request.respond(
+                    Response::from_string(r#"{"error":"Invalid JSON body"}"#)
+                        .with_header(Header::from_bytes("Content-Type", "application/json").unwrap())
+                        .with_status_code(400)
+                );
                 continue;
             }
+        };
+
+        // Use body as prompt if non-empty, else fall back to URL
+        let prompt_text = if parsed.body.trim().is_empty() {
+            parsed.url.clone()
+        } else {
+            parsed.body.clone()
         };
 
         let ai_request = AIRequest {
             app_id: "mitm".to_string(),
             action: "ai_query".to_string(),
             resource: "web".to_string(),
-            prompt: Some(parsed.url.clone()),
+            prompt: Some(prompt_text.clone()),
         };
 
         // 🔥 ENGINE LOGIC
@@ -64,7 +85,7 @@ pub fn start_api() {
             false
         };
 
-        // 🔥 EXTRA SMART DETECTION
+        // 🔥 KEYWORD DETECTION on URL
         let keyword_block = parsed.url.contains("chatgpt")
             || parsed.url.contains("claude")
             || parsed.url.contains("openai")
@@ -79,25 +100,24 @@ pub fn start_api() {
 
         // 🔥 LOGGING
         let log = format!(
-            "[MITM] URL: {} | Risk: {} | Suspicious: {} | Decision: {}",
-            parsed.url, risk, suspicious, decision
+            "[MITM] URL: {} | Body: {} | Risk: {} | Suspicious: {} | Decision: {}",
+            parsed.url, parsed.body, risk, suspicious, decision
         );
         log_event(&log);
 
         // 🔥 STORE BLOCKED
         if decision == "BLOCK" {
-            BLOCKED_REQUESTS.lock().unwrap().push(ai_request.clone());
+            BLOCKED_REQUESTS.lock().unwrap().push(ai_request);
         }
 
-        let response = Outgoing {
+        let response_body = serde_json::to_string(&Outgoing {
             decision: decision.to_string(),
-        };
+            risk,
+        }).unwrap_or_else(|_| r#"{"decision":"BLOCK","risk":0}"#.to_string());
 
-        let json = serde_json::to_string(&response).unwrap();
-
-        request.respond(
-            Response::from_string(json)
+        let _ = request.respond(
+            Response::from_string(response_body)
                 .with_header(Header::from_bytes("Content-Type", "application/json").unwrap())
-        ).unwrap();
+        );
     }
 }

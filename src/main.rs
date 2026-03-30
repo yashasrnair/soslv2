@@ -1,4 +1,5 @@
 use std::env;
+use std::thread;
 
 mod kernel;
 mod security;
@@ -17,15 +18,19 @@ fn main() {
 
     if args.len() < 2 {
         println!("Usage:");
-        println!("secure_ai run <prompt>");
-        println!("secure_ai logs");
+        println!("  soslv2 run <prompt>      — Intercept a CLI prompt");
+        println!("  soslv2 logs              — View logs");
+        println!("  soslv2 proxy             — Start HTTP proxy (port 8080)");
+        println!("  soslv2 api               — Start Zero-Trust API (port 5000)");
+        println!("  soslv2 dashboard         — Start dashboard (port 9090)");
+        println!("  soslv2 all               — Start API + Dashboard + Proxy together");
         return;
     }
 
     match args[1].as_str() {
         "run" => {
             if args.len() < 3 {
-                println!("Usage: secure_ai run <prompt>");
+                println!("Usage: soslv2 run <prompt>");
                 return;
             }
 
@@ -43,7 +48,7 @@ fn main() {
 
         "logs" => {
             let content = std::fs::read_to_string("logs.txt")
-                .unwrap_or("No logs found".to_string());
+                .unwrap_or_else(|_| "No logs found".to_string());
             println!("{}", content);
         }
 
@@ -59,9 +64,35 @@ fn main() {
             start_dashboard();
         }
 
-        _ => {
-            println!("Invalid command");
+        // 🔥 NEW: run all three servers at once in separate threads
+        "all" => {
+            println!("🚀 Starting all services...");
+
+            let api_thread = thread::spawn(|| {
+                start_api();
+            });
+
+            let dashboard_thread = thread::spawn(|| {
+                start_dashboard();
+            });
+
+            let proxy_thread = thread::spawn(|| {
+                start_proxy();
+            });
+
+            println!("✅ API       → http://localhost:5000/check");
+            println!("✅ Dashboard → http://localhost:9090");
+            println!("✅ Proxy     → http://localhost:8080");
+            println!("Press Ctrl+C to stop.");
+
+            // Wait for all threads (they run indefinitely)
+            api_thread.join().unwrap();
+            dashboard_thread.join().unwrap();
+            proxy_thread.join().unwrap();
         }
-        
+
+        _ => {
+            println!("Invalid command. Run without arguments to see usage.");
+        }
     }
 }
