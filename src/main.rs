@@ -10,7 +10,7 @@ use kernel::interceptor::intercept;
 use kernel::proxy::start_proxy;
 use types::AIRequest;
 use kernel::api::start_api;
-use kernel::dashboard::start_dashboard;
+use crate::utils::dashboard::start_dashboard;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

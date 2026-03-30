@@ -1,4 +1,4 @@
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub struct AIRequest {
     pub app_id: String,
     pub action: String,

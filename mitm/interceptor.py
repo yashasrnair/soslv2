@@ -1,7 +1,7 @@
 from mitmproxy import http
 import requests
 
-RUST_API = "http://localhost:5000/check"
+RUST_API = "http://localhost:5000"
 
 def request(flow: http.HTTPFlow):
     url = flow.request.pretty_url
