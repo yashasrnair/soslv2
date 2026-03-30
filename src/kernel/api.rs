@@ -22,12 +22,19 @@ struct Outgoing {
 
 pub fn start_api() {
     let server = Server::http("0.0.0.0:5000").unwrap();
-    println!("🔥 Rust API running on port 5000");
+    println!("🔥 Rust API running on http://localhost:5000/check");
 
     for mut request in server.incoming_requests() {
+
+        // 🔥 ROUTE CHECK
+        if request.url() != "/check" {
+            request.respond(Response::from_string("Invalid route")).unwrap();
+            continue;
+        }
+
         let mut content = String::new();
 
-        if let Err(_) = request.as_reader().read_to_string(&mut content) {
+        if request.as_reader().read_to_string(&mut content).is_err() {
             request.respond(Response::from_string("Invalid request")).unwrap();
             continue;
         }
@@ -57,7 +64,14 @@ pub fn start_api() {
             false
         };
 
-        let decision = if !allowed || risk > 50 || suspicious {
+        // 🔥 EXTRA SMART DETECTION
+        let keyword_block = parsed.url.contains("chatgpt")
+            || parsed.url.contains("claude")
+            || parsed.url.contains("openai")
+            || parsed.url.contains("password")
+            || parsed.url.contains("token");
+
+        let decision = if keyword_block || !allowed || risk > 50 || suspicious {
             "BLOCK"
         } else {
             "ALLOW"
@@ -70,25 +84,20 @@ pub fn start_api() {
         );
         log_event(&log);
 
-        // 🔥 STORE BLOCKED REQUEST
+        // 🔥 STORE BLOCKED
         if decision == "BLOCK" {
-            BLOCKED_REQUESTS
-                .lock()
-                .unwrap()
-                .push(ai_request.clone());
+            BLOCKED_REQUESTS.lock().unwrap().push(ai_request.clone());
         }
 
-        // 🔥 RESPONSE
         let response = Outgoing {
             decision: decision.to_string(),
         };
 
         let json = serde_json::to_string(&response).unwrap();
 
-        request
-            .respond(
-                Response::from_string(json).with_header(Header::from_bytes(&b"Content-Type"[..], &b"application/json"[..]).unwrap())
-            )
-            .unwrap();
+        request.respond(
+            Response::from_string(json)
+                .with_header(Header::from_bytes("Content-Type", "application/json").unwrap())
+        ).unwrap();
     }
 }

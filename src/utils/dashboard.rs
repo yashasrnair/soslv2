@@ -1,6 +1,5 @@
-use tiny_http::{Server, Response};
+use tiny_http::{Server, Response, Header};
 use crate::utils::state::BLOCKED_REQUESTS;
-
 
 pub fn start_dashboard() {
     let server = Server::http("0.0.0.0:9090").unwrap();
@@ -9,7 +8,7 @@ pub fn start_dashboard() {
     for request in server.incoming_requests() {
         let url = request.url().to_string();
 
-        // ✅ HANDLE APPROVAL
+        // 🔥 APPROVE HANDLER
         if url.starts_with("/approve") {
             if let Some(id_str) = url.split("id=").nth(1) {
                 if let Ok(id) = id_str.parse::<usize>() {
@@ -24,11 +23,11 @@ pub fn start_dashboard() {
 
         let requests = BLOCKED_REQUESTS.lock().unwrap();
 
-        let mut html = String::from("
+        let mut html = String::from(r#"
         <html>
         <head>
             <title>Zero Trust AI Dashboard</title>
-            <meta http-equiv='refresh' content='2'>
+            <meta http-equiv="refresh" content="2">
             <style>
                 body { font-family: Arial; background: #111; color: white; }
                 h1 { color: #00ffcc; }
@@ -50,7 +49,7 @@ pub fn start_dashboard() {
         </head>
         <body>
             <h1>🚫 Blocked AI Requests</h1>
-        ");
+        "#);
 
         for (i, req) in requests.iter().enumerate() {
             html.push_str(&format!(
@@ -69,6 +68,9 @@ pub fn start_dashboard() {
 
         html.push_str("</body></html>");
 
-        request.respond(Response::from_string(html)).unwrap();
+        request.respond(
+            Response::from_string(html)
+                .with_header(Header::from_bytes("Content-Type", "text/html").unwrap())
+        ).unwrap();
     }
 }
