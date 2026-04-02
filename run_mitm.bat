@@ -7,55 +7,51 @@ echo.
 :: ── Check Python ──
 where python >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Python not found.
-    echo Download from https://www.python.org/downloads/
+    echo [ERROR] Python not found. Download from https://www.python.org/downloads/
     pause & exit /b 1
 )
 
-:: ── Install mitmproxy if needed ──
+:: ── Install deps if needed ──
 python -c "import mitmproxy" >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [INFO] Installing mitmproxy...
-    pip install mitmproxy requests
-)
-
-python -c "import requests" >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    pip install requests
+    pip install mitmproxy
 )
 
 echo.
-echo [STEP 1] Build the Rust engine first (if not already built)
-echo          Run:  cargo build --release
+echo ==========================================================
+echo  IMPORTANT — Do this ONCE before running the proxy:
+echo ==========================================================
 echo.
-echo [STEP 2] In a SEPARATE terminal, start the Rust API:
-echo          cargo run --release -- api
+echo  1. Open Windows Settings ^> Network ^& Internet ^> Proxy
+echo     ^> Manual proxy setup ^> Turn ON
+echo     HTTP  Proxy: 127.0.0.1   Port: 8888
+echo     HTTPS Proxy: 127.0.0.1   Port: 8888
+echo     "Don't use proxy for": localhost;127.0.0.1
 echo.
-echo [STEP 3] This script will now start the MITM proxy on port 8888
-echo          AND the approval dashboard on http://localhost:9091
+echo  2. HTTPS Certificate (first time only):
+echo     - With proxy ON, visit http://mitm.it in Chrome/Firefox
+echo     - Click "Windows" to download the cert
+echo     - Double-click it ^> Install ^> Local Machine
+echo     - Choose "Trusted Root Certification Authorities"
+echo     - Restart your browser
 echo.
-
-set /p ready="Press ENTER when the Rust API is running on port 5000..."
-
-echo.
-echo [ZeroTrust] Starting mitmproxy on port 8888...
-echo [ZeroTrust] Approval dashboard will be at http://localhost:9091
-echo.
-echo ── IMPORTANT: Configure Windows proxy settings ──
-echo    Settings ^> Network ^& Internet ^> Proxy ^> Manual proxy setup
-echo    HTTP:  127.0.0.1   Port: 8888
-echo    HTTPS: 127.0.0.1   Port: 8888
-echo    Toggle "Use a proxy server" ON
-echo.
-echo ── HTTPS Certificate (first-time only) ──
-echo    With proxy enabled, visit:  http://mitm.it
-echo    Click Windows → Download certificate
-echo    Double-click it → Install → "Local Machine"
-echo    → "Place all certificates in: Trusted Root Certification Authorities"
-echo    Restart your browser after installing.
+echo ==========================================================
 echo.
 
-:: Start mitmproxy (non-interactive mode, addon only)
-mitmdump -s mitm/interceptor.py --listen-port 8888 --ssl-insecure
+set /p ready="Press ENTER when the Rust API is running (cargo run --release -- api)..."
+
+echo.
+echo [ZeroTrust] Starting MITM proxy on port 8888...
+echo [ZeroTrust] Approval dashboard will open at http://localhost:9091
+echo.
+echo Press Ctrl+C to stop.
+echo.
+
+:: Open the dashboard in the browser after a short delay
+start /b cmd /c "timeout /t 2 >nul && start http://localhost:9091"
+
+:: Run mitmproxy in dump mode (no interactive UI, just logs to console)
+mitmdump -s mitm/interceptor.py --listen-port 8888
 
 pause

@@ -1,65 +1,178 @@
 """
-Zero Trust MITM Interceptor — Pause & Resume Edition
-=====================================================
-How it works:
-  1. Every request is sent to the Rust Zero-Trust engine at :5000/check
-  2. ALLOWED  → forwarded immediately, site loads normally
-  3. BLOCKED  → request is HELD (flow is paused via mitmproxy async/threading)
-               A unique flow_id is registered in a shared pending dict
-               The dashboard shows an Approve button
-               When approved, the held flow is resumed and forwarded normally
-               The user sees the page load as if nothing happened (just a delay)
+Zero Trust MITM Interceptor — Pause & Resume Edition (Fixed)
+=============================================================
+Root cause of the previous error:
+  The `requests` library inherits the system proxy settings (127.0.0.1:8888).
+  So when the interceptor called http://localhost:5000/check, it tried to route
+  THAT call through itself (the proxy), causing:
+    ProxyError → 'No connection could be made because the target machine actively refused it'
 
-Run with:
-  mitmproxy -s mitm/interceptor.py --listen-port 8888
-  OR
-  mitmweb  -s mitm/interceptor.py --listen-port 8888   (has built-in web UI too)
+Fix applied:
+  1. Replaced `requests` with `urllib.request` + a NO_PROXY handler so the
+     call to the Rust engine ALWAYS goes direct, never through the proxy.
+  2. mitmproxy ignore_hosts set to skip localhost/127.0.0.1 entirely.
+  3. Host-level approval cache: once a host is approved, all further requests
+     to that host pass through instantly without re-asking the engine.
+  4. Dashboard now shows the cache table and lets you clear individual entries.
 
-Then set Windows proxy to:
-  HTTP Proxy:  127.0.0.1:8888
-  HTTPS Proxy: 127.0.0.1:8888
+Run:
+  mitmdump -s mitm/interceptor.py --listen-port 8888
 
-For HTTPS to work, install the mitmproxy CA cert:
-  1. With proxy set, visit http://mitm.it
-  2. Download and install the Windows certificate
-  3. Place it in "Trusted Root Certification Authorities"
+Windows proxy settings:
+  Settings > Network & Internet > Proxy > Manual proxy setup
+  HTTP:  127.0.0.1  Port: 8888
+  HTTPS: 127.0.0.1  Port: 8888
+  "Don't use the proxy server for": localhost;127.0.0.1   <- ADD THIS
 """
 
 import uuid
 import threading
 import time
-import requests
+import json
+import urllib.request
+import urllib.parse
+import urllib.error
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 from mitmproxy import http
-from mitmproxy import ctx
 
-# ── Config ──────────────────────────────────────────────────────────────────
-RUST_API      = "http://localhost:5000/check"
-APPROVAL_PORT = 9091          # separate lightweight approval endpoint (not the Rust dashboard)
-POLL_INTERVAL = 0.5           # seconds between approval checks
-MAX_WAIT_SECS = 120           # abandon hold after 2 minutes (send 503)
+# ── Config ────────────────────────────────────────────────────────────────────
+RUST_API      = "http://127.0.0.1:5000/check"   # direct IP, never proxied
+APPROVAL_PORT = 9091
+MAX_WAIT_SECS = 120
 
-# ── Shared state ────────────────────────────────────────────────────────────
-# flow_id → {"flow": ..., "approved": bool, "event": threading.Event, "meta": {...}}
+# ── Shared state ──────────────────────────────────────────────────────────────
 pending_flows: dict = {}
 pending_lock  = threading.Lock()
 
-# ── Approval HTTP server (runs in background thread) ────────────────────────
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import json
-import urllib.parse
+# Host-level decision cache  {host: "approved" | "rejected"}
+host_cache: dict = {}
+host_cache_lock  = threading.Lock()
+
+
+# ── Rust engine caller (proxy-free) ───────────────────────────────────────────
+def call_rust_engine(url: str, body: str) -> dict:
+    payload = json.dumps({"url": url, "body": body}).encode()
+    req = urllib.request.Request(
+        RUST_API,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    # Empty ProxyHandler dict = bypass ALL system proxies for this one call
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    try:
+        with opener.open(req, timeout=3) as resp:
+            return json.loads(resp.read().decode())
+    except Exception as e:
+        print(f"[ZeroTrust] ⚠  Rust engine unreachable ({e}) — defaulting ALLOW")
+        return {"decision": "ALLOW", "risk": 0}
+
+
+# ── Approval dashboard ────────────────────────────────────────────────────────
+DASHBOARD_HTML = """<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Zero Trust — Approval Dashboard</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#0d0d0d;color:#e0e0e0;padding:30px}
+    h1{color:#00ffcc;margin-bottom:6px;font-size:1.5rem}
+    .sub{color:#555;font-size:.82rem;margin-bottom:22px}
+    .card{background:#1a1a1a;border:1px solid #c0392b;border-radius:10px;
+          padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
+    .card.fading{opacity:.4;transition:opacity .3s}
+    .info{flex:1}
+    .url{font-size:.9rem;color:#fff;word-break:break-all}
+    .meta{font-size:.76rem;color:#777;margin-top:5px}
+    .meta b{color:#aaa}
+    .risk{color:#e67e22;font-weight:bold}
+    .btn{padding:7px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:.82rem}
+    .ok{background:#00ffcc;color:#000;margin-right:7px}
+    .no{background:#c0392b;color:#fff}
+    .ok:hover{background:#00ddb3}
+    .no:hover{background:#962d22}
+    .empty{color:#444;font-style:italic;padding:16px 0}
+    .badge{background:#c0392b;color:#fff;border-radius:999px;padding:2px 9px;font-size:.72rem;margin-left:8px}
+    .section-title{color:#555;font-size:1rem;margin:28px 0 10px}
+    .crow{display:flex;gap:10px;align-items:center;padding:6px 10px;
+          background:#111;border-radius:6px;margin-bottom:6px;font-size:.82rem}
+    .crow .host{flex:1;color:#888}
+    .ta{color:#27ae60;font-weight:bold}
+    .tb{color:#c0392b;font-weight:bold}
+    .small-btn{padding:3px 10px;font-size:.72rem}
+  </style>
+</head>
+<body>
+  <h1>&#x1F6E1; Zero Trust Approval Dashboard <span class="badge" id="cnt">…</span></h1>
+  <p class="sub">Requests held by the engine. Approve = site loads normally. Reject = 403. Decisions are cached per-host.</p>
+  <div id="pending-list"><p class="empty">Loading…</p></div>
+
+  <h2 class="section-title">&#x1F5C2; Host Decision Cache</h2>
+  <div id="cache-list"><p class="empty">No cached decisions yet.</p></div>
+
+  <script>
+    async function load(){
+      const [pr,cr]=await Promise.all([fetch('/pending'),fetch('/cache')]);
+      const items=await pr.json(), cache=await cr.json();
+      document.getElementById('cnt').textContent=items.length;
+
+      const pl=document.getElementById('pending-list');
+      pl.innerHTML=items.length
+        ? items.map(it=>`
+          <div class="card" id="c-${it.id}">
+            <div class="info">
+              <div class="url">&#x1F512; [${it.method}] ${it.url}</div>
+              <div class="meta">
+                <b>Host:</b> ${it.host} &nbsp;
+                <span class="risk">Risk: ${it.risk}</span> &nbsp;
+                <b>Waiting:</b> ${it.age_s}s
+              </div>
+            </div>
+            <div>
+              <button class="btn ok" onclick="act('approve','${it.id}','${it.host}')">&#x2705; Approve</button>
+              <button class="btn no"  onclick="act('reject', '${it.id}','${it.host}')">&#x1F6AB; Reject</button>
+            </div>
+          </div>`).join('')
+        : '<p class="empty">&#x2705; No held requests — all clear.</p>';
+
+      const cl=document.getElementById('cache-list');
+      const entries=Object.entries(cache);
+      cl.innerHTML=entries.length
+        ? entries.map(([host,dec])=>`
+          <div class="crow">
+            <span class="host">${host}</span>
+            <span class="${dec==='approved'?'ta':'tb'}">${dec.toUpperCase()}</span>
+            <button class="btn no small-btn" onclick="clearCache('${host}')">Clear</button>
+          </div>`).join('')
+        : '<p class="empty">No cached decisions yet.</p>';
+    }
+
+    async function act(action,id,host){
+      document.getElementById('c-'+id)?.classList.add('fading');
+      await fetch('/'+action+'?id='+id+'&host='+encodeURIComponent(host));
+      setTimeout(load,350);
+    }
+
+    async function clearCache(host){
+      await fetch('/clear-cache?host='+encodeURIComponent(host));
+      setTimeout(load,200);
+    }
+
+    load();
+    setInterval(load,2500);
+  </script>
+</body>
+</html>
+"""
+
 
 class ApprovalHandler(BaseHTTPRequestHandler):
-    """
-    Tiny HTTP server that the dashboard talks to for approvals.
-    GET /pending          → list of pending flow IDs + metadata (JSON)
-    GET /approve?id=<id>  → approve a specific flow
-    GET /reject?id=<id>   → reject a specific flow (sends 403 to browser)
-    """
+    def log_message(self, fmt, *args):
+        pass
 
-    def log_message(self, format, *args):
-        pass  # silence default access log
-
-    def _send_json(self, code: int, data):
+    def _json(self, code, data):
         body = json.dumps(data).encode()
         self.send_response(code)
         self.send_header("Content-Type", "application/json")
@@ -68,248 +181,183 @@ class ApprovalHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def _send_html(self, code: int, html: str):
+    def _html(self, html):
         body = html.encode()
-        self.send_response(code)
-        self.send_header("Content-Type", "text/html")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
 
     def do_GET(self):
-        parsed = urllib.parse.urlparse(self.path)
-        params = urllib.parse.parse_qs(parsed.query)
+        p = urllib.parse.urlparse(self.path)
+        q = urllib.parse.parse_qs(p.query)
 
-        if parsed.path == "/pending":
+        if p.path in ("/", "/dashboard"):
+            self._html(DASHBOARD_HTML)
+
+        elif p.path == "/pending":
             with pending_lock:
-                result = [
-                    {
-                        "id":     fid,
-                        "url":    meta["meta"]["url"],
-                        "method": meta["meta"]["method"],
-                        "host":   meta["meta"]["host"],
-                        "risk":   meta["meta"].get("risk", "?"),
-                        "age_s":  round(time.time() - meta["meta"]["timestamp"], 1),
-                    }
-                    for fid, meta in pending_flows.items()
-                    if not meta["approved"] and not meta.get("rejected")
+                out = [
+                    {"id": fid, "url": e["meta"]["url"], "method": e["meta"]["method"],
+                     "host": e["meta"]["host"], "risk": e["meta"].get("risk", 0),
+                     "age_s": round(time.time() - e["meta"]["ts"], 1)}
+                    for fid, e in pending_flows.items()
+                    if not e["approved"] and not e.get("rejected")
                 ]
-            self._send_json(200, result)
+            self._json(200, out)
 
-        elif parsed.path == "/approve":
-            fid = params.get("id", [None])[0]
+        elif p.path == "/cache":
+            with host_cache_lock:
+                self._json(200, dict(host_cache))
+
+        elif p.path == "/approve":
+            fid  = q.get("id",   [None])[0]
+            host = q.get("host", [None])[0]
+            if host:
+                with host_cache_lock:
+                    host_cache[host] = "approved"
             with pending_lock:
                 if fid and fid in pending_flows:
                     pending_flows[fid]["approved"] = True
                     pending_flows[fid]["event"].set()
-                    self._send_json(200, {"status": "approved", "id": fid})
-                else:
-                    self._send_json(404, {"error": "flow not found"})
+            self._json(200, {"status": "approved"})
 
-        elif parsed.path == "/reject":
-            fid = params.get("id", [None])[0]
+        elif p.path == "/reject":
+            fid  = q.get("id",   [None])[0]
+            host = q.get("host", [None])[0]
+            if host:
+                with host_cache_lock:
+                    host_cache[host] = "rejected"
             with pending_lock:
                 if fid and fid in pending_flows:
                     pending_flows[fid]["rejected"] = True
                     pending_flows[fid]["event"].set()
-                    self._send_json(200, {"status": "rejected", "id": fid})
-                else:
-                    self._send_json(404, {"error": "flow not found"})
+            self._json(200, {"status": "rejected"})
 
-        elif parsed.path == "/" or parsed.path == "/dashboard":
-            self._send_html(200, DASHBOARD_HTML)
+        elif p.path == "/clear-cache":
+            host = q.get("host", [None])[0]
+            if host:
+                with host_cache_lock:
+                    host_cache.pop(host, None)
+            self._json(200, {"status": "cleared"})
 
         else:
-            self._send_json(404, {"error": "unknown route"})
+            self._json(404, {"error": "unknown route"})
 
 
-DASHBOARD_HTML = """<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Zero Trust — Approval Dashboard</title>
-  <meta http-equiv="refresh" content="3">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #0d0d0d; color: #e0e0e0; padding: 30px; }
-    h1 { color: #00ffcc; margin-bottom: 6px; font-size: 1.6rem; }
-    .subtitle { color: #666; font-size: 0.85rem; margin-bottom: 24px; }
-    .card {
-      background: #1a1a1a;
-      border: 1px solid #ff4444;
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .card-info { flex: 1; }
-    .card-info .url { font-size: 0.95rem; color: #fff; word-break: break-all; }
-    .card-info .meta { font-size: 0.78rem; color: #888; margin-top: 4px; }
-    .card-info .meta span { margin-right: 14px; }
-    .card-info .meta .risk { color: #ff8800; font-weight: bold; }
-    .btn { padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
-    .approve { background: #00ffcc; color: #000; margin-right: 8px; }
-    .reject  { background: #ff4444; color: #fff; }
-    .approve:hover { background: #00ddb3; }
-    .reject:hover  { background: #cc2222; }
-    .empty { color: #555; font-style: italic; padding: 20px 0; }
-    .badge { display: inline-block; background: #ff4444; color: #fff; border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; margin-left: 10px; }
-    #count { }
-  </style>
-</head>
-<body>
-  <h1>🛡 Zero Trust — Pending Approvals <span class="badge" id="count">…</span></h1>
-  <p class="subtitle">Requests held by the Zero-Trust engine. Approve to let the page load normally. Reject to block permanently.</p>
-  <div id="list"><p class="empty">Loading…</p></div>
-
-  <script>
-    async function load() {
-      const res = await fetch('/pending');
-      const items = await res.json();
-      document.getElementById('count').textContent = items.length;
-      const list = document.getElementById('list');
-      if (items.length === 0) {
-        list.innerHTML = '<p class="empty">✅ No pending requests — all clear.</p>';
-        return;
-      }
-      list.innerHTML = items.map(item => `
-        <div class="card" id="card-${item.id}">
-          <div class="card-info">
-            <div class="url">🔒 [${item.method}] ${item.url}</div>
-            <div class="meta">
-              <span>Host: <b>${item.host}</b></span>
-              <span class="risk">Risk Score: ${item.risk}</span>
-              <span>Waiting: ${item.age_s}s</span>
-              <span>ID: <code>${item.id.substring(0,8)}…</code></span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button class="btn approve" onclick="act('approve','${item.id}')">✅ Approve</button>
-            <button class="btn reject"  onclick="act('reject', '${item.id}')">🚫 Reject</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function act(action, id) {
-      const card = document.getElementById('card-' + id);
-      if (card) card.style.opacity = '0.4';
-      await fetch('/' + action + '?id=' + id);
-      setTimeout(load, 400);
-    }
-
-    load();
-    setInterval(load, 3000);
-  </script>
-</body>
-</html>
-"""
+def _start_approval_server():
+    srv = HTTPServer(("0.0.0.0", APPROVAL_PORT), ApprovalHandler)
+    print(f"[ZeroTrust] Dashboard → http://localhost:{APPROVAL_PORT}")
+    srv.serve_forever()
 
 
-def start_approval_server():
-    server = HTTPServer(("0.0.0.0", APPROVAL_PORT), ApprovalHandler)
-    print(f"[ZeroTrust] Approval dashboard → http://localhost:{APPROVAL_PORT}")
-    server.serve_forever()
-
-
-# ── mitmproxy addon ──────────────────────────────────────────────────────────
-
+# ── mitmproxy addon ───────────────────────────────────────────────────────────
 class ZeroTrustAddon:
 
     def __init__(self):
-        # Start the approval HTTP server in a daemon thread
-        t = threading.Thread(target=start_approval_server, daemon=True)
-        t.start()
-        print("[ZeroTrust] Interceptor active — all requests will be evaluated.")
+        threading.Thread(target=_start_approval_server, daemon=True).start()
+        print("[ZeroTrust] Interceptor active.")
 
-    # ── called for every HTTP/HTTPS request ──
+    def configure(self, updated):
+        """Tell mitmproxy to never intercept localhost — prevents self-loop."""
+        try:
+            from mitmproxy import ctx
+            ctx.options.ignore_hosts = [
+                r"^localhost$",
+                r"^127\.0\.0\.1$",
+                r"^::1$",
+            ]
+        except Exception:
+            pass
+
     def request(self, flow: http.HTTPFlow):
+        host   = flow.request.pretty_host
         url    = flow.request.pretty_url
         method = flow.request.method
-        host   = flow.request.pretty_host
 
-        # Skip the approval server's own traffic to avoid recursion
-        if f":{APPROVAL_PORT}" in url or "localhost" in host:
+        # Never touch localhost / approval server traffic
+        if host in ("localhost", "127.0.0.1", "::1"):
             return
 
+        # ── Fast path: check host cache ──
+        with host_cache_lock:
+            cached = host_cache.get(host)
+
+        if cached == "approved":
+            print(f"[ZeroTrust] ⚡ CACHE-APPROVED  {host}")
+            return
+        if cached == "rejected":
+            print(f"[ZeroTrust] ⚡ CACHE-REJECTED   {host}")
+            flow.response = http.Response.make(
+                403,
+                f"<html><body style='font-family:sans-serif;background:#111;color:#eee;padding:40px'>"
+                f"<h2 style='color:#e74c3c'>&#x1F6AB; Blocked by Zero Trust</h2>"
+                f"<p>Host <b>{host}</b> is cached as REJECTED.</p>"
+                f"<p>Open <a href='http://localhost:{APPROVAL_PORT}' style='color:#00ffcc'>"
+                f"the dashboard</a> and clear the cache to re-evaluate.</p></body></html>",
+                {"Content-Type": "text/html"},
+            )
+            return
+
+        # ── Ask Rust engine (direct, no proxy) ──
         try:
             body = flow.request.get_text(strict=False) or ""
         except Exception:
             body = ""
 
         print(f"\n[ZeroTrust] ▶ {method} {url}")
+        data     = call_rust_engine(url, body)
+        decision = data.get("decision", "ALLOW")
+        risk     = int(data.get("risk", 0))
+        print(f"[ZeroTrust]   → {decision}  risk={risk}")
 
-        # ── Ask Rust engine ──
-        decision = "ALLOW"
-        risk      = 0
-        try:
-            res = requests.post(
-                RUST_API,
-                json={"url": url, "body": body},
-                headers={"Content-Type": "application/json"},
-                timeout=3,
-            )
-            data     = res.json()
-            decision = data.get("decision", "ALLOW")
-            risk     = data.get("risk", 0)
-        except Exception as e:
-            print(f"[ZeroTrust] ⚠ Rust engine unreachable ({e}) — defaulting ALLOW")
+        if decision == "ALLOW":
+            return
 
-        print(f"[ZeroTrust] Decision: {decision}  Risk: {risk}")
+        # ── BLOCK: pause the flow ──
+        self._hold_flow(flow, url, method, host, risk)
 
-        if decision == "BLOCK":
-            self._hold_flow(flow, url, method, host, risk)
-
-    # ── Hold the flow until approved / rejected / timeout ──
     def _hold_flow(self, flow: http.HTTPFlow, url, method, host, risk):
         flow_id = str(uuid.uuid4())
         event   = threading.Event()
 
-        entry = {
-            "flow":     flow,
-            "approved": False,
-            "rejected": False,
-            "event":    event,
-            "meta": {
-                "url":       url,
-                "method":    method,
-                "host":      host,
-                "risk":      risk,
-                "timestamp": time.time(),
-            },
-        }
-
         with pending_lock:
-            pending_flows[flow_id] = entry
+            pending_flows[flow_id] = {
+                "approved": False, "rejected": False, "event": event,
+                "meta": {"url": url, "method": method, "host": host,
+                         "risk": risk, "ts": time.time()},
+            }
 
-        print(f"[ZeroTrust] ⏸  Flow held — id={flow_id[:8]}… Waiting for dashboard approval.")
-        print(f"            Open http://localhost:{APPROVAL_PORT} to approve/reject.")
+        print(f"[ZeroTrust] ⏸  HELD  {host}  (id={flow_id[:8]}…)")
+        print(f"[ZeroTrust]    Approve/reject at http://localhost:{APPROVAL_PORT}")
 
-        # Block this thread (mitmproxy runs each flow in its own thread)
         signalled = event.wait(timeout=MAX_WAIT_SECS)
 
         with pending_lock:
-            state = pending_flows.pop(flow_id, {})
+            entry = pending_flows.pop(flow_id, {})
 
-        if not signalled or state.get("rejected"):
-            # Timeout or explicit reject → send 403 to browser
-            reason = "timed out" if not signalled else "rejected by operator"
-            print(f"[ZeroTrust] 🚫 Flow {flow_id[:8]}… {reason} — sending 403")
-            flow.response = http.Response.make(
-                403,
-                f"<h2>🚫 Blocked by Zero Trust AI Layer</h2>"
-                f"<p>URL: {url}</p>"
-                f"<p>Reason: {reason}</p>"
-                f"<p>Risk score: {risk}</p>",
-                {"Content-Type": "text/html"},
-            )
-        else:
-            # Approved — let mitmproxy forward the original request normally
-            print(f"[ZeroTrust] ✅ Flow {flow_id[:8]}… approved — resuming normally")
-            # flow.response is NOT set → mitmproxy forwards to origin and returns real response
+        if entry.get("approved"):
+            print(f"[ZeroTrust] ✅ APPROVED  {host} — forwarding")
+            # flow.response NOT set → mitmproxy forwards to real origin → page loads normally
+            return
+
+        reason = "operator rejected" if entry.get("rejected") else f"timed out ({MAX_WAIT_SECS}s)"
+        print(f"[ZeroTrust] &#x1F6AB; BLOCKED  {host}  ({reason})")
+        flow.response = http.Response.make(
+            403,
+            f"""<html><body style='font-family:sans-serif;background:#111;color:#eee;padding:40px'>
+            <h2 style='color:#e74c3c'>&#x1F6AB; Blocked by Zero Trust AI Layer</h2>
+            <p><b>URL:</b> {url}</p>
+            <p><b>Host:</b> {host}</p>
+            <p><b>Risk score:</b> {risk}</p>
+            <p><b>Reason:</b> {reason}</p>
+            <p style='margin-top:20px'>
+              <a href='http://localhost:{APPROVAL_PORT}' style='color:#00ffcc'>
+              Open Zero Trust Dashboard</a>
+            </p></body></html>""",
+            {"Content-Type": "text/html"},
+        )
 
 
-# ── Register the addon ───────────────────────────────────────────────────────
 addons = [ZeroTrustAddon()]
