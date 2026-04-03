@@ -7,8 +7,6 @@ pub fn log_event(event: &str) {
         .create(true)
         .open("logs.txt")
         .expect("Failed to open log file");
-
     writeln!(file, "{}", event).expect("Failed to write log");
-    
-    println!("[LOG]: {}", event); // keep console output also
+    println!("[LOG] {}", event);
 }

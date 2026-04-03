@@ -1,9 +1,12 @@
 use crate::types::AIRequest;
+use crate::security::rules_loader::get_rules;
 
 pub fn check_permission(request: &AIRequest) -> bool {
-    match request.action.as_str() {
-        "ai_query" => true,
-        "read_file" => true,
-        _ => false,
+    let rules = get_rules();
+    // Explicitly blocked actions always fail
+    if rules.blocked_actions.contains(&request.action) {
+        return false;
     }
+    // Must be in allowed list
+    rules.allowed_actions.contains(&request.action)
 }

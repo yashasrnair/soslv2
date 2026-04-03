@@ -1,0 +1,137 @@
+{
+  "_comment": "Zero Trust Dynamic Rules — edit this file and the engine reloads automatically (no recompile needed)",
+
+  "risk_keywords": [
+    { "word": "password", "score": 60, "category": "credential" },
+    { "word": "passwd", "score": 60, "category": "credential" },
+    { "word": "secret", "score": 50, "category": "credential" },
+    { "word": "api_key", "score": 55, "category": "credential" },
+    { "word": "api key", "score": 55, "category": "credential" },
+    { "word": "access_token", "score": 55, "category": "credential" },
+    { "word": "bearer", "score": 45, "category": "credential" },
+    { "word": "private_key", "score": 70, "category": "credential" },
+    { "word": "private key", "score": 70, "category": "credential" },
+    { "word": "ssh key", "score": 70, "category": "credential" },
+    { "word": "encryption key", "score": 65, "category": "credential" },
+    { "word": "credit card", "score": 80, "category": "pii" },
+    { "word": "ssn", "score": 80, "category": "pii" },
+    { "word": "social security", "score": 80, "category": "pii" },
+    { "word": "passport", "score": 70, "category": "pii" },
+    { "word": "date of birth", "score": 60, "category": "pii" },
+    { "word": "home address", "score": 65, "category": "pii" },
+    { "word": "ignore previous", "score": 90, "category": "jailbreak" },
+    { "word": "ignore all instructions", "score": 95, "category": "jailbreak" },
+    { "word": "disregard", "score": 75, "category": "jailbreak" },
+    { "word": "jailbreak", "score": 90, "category": "jailbreak" },
+    { "word": "dan mode", "score": 95, "category": "jailbreak" },
+    { "word": "developer mode", "score": 85, "category": "jailbreak" },
+    { "word": "system prompt", "score": 80, "category": "prompt_injection" },
+    { "word": "you are now", "score": 70, "category": "prompt_injection" },
+    { "word": "pretend you are", "score": 70, "category": "prompt_injection" },
+    { "word": "act as if", "score": 65, "category": "prompt_injection" },
+    { "word": "roleplay as", "score": 60, "category": "prompt_injection" },
+    { "word": "sudo", "score": 55, "category": "privilege_escalation" },
+    { "word": "root access", "score": 75, "category": "privilege_escalation" },
+    {
+      "word": "admin override",
+      "score": 80,
+      "category": "privilege_escalation"
+    },
+    { "word": "bypass", "score": 60, "category": "evasion" },
+    { "word": "circumvent", "score": 60, "category": "evasion" },
+    { "word": "exfiltrate", "score": 85, "category": "exfiltration" },
+    { "word": "send to remote", "score": 80, "category": "exfiltration" },
+    { "word": "upload to", "score": 50, "category": "exfiltration" },
+    { "word": "eval(", "score": 70, "category": "code_injection" },
+    { "word": "exec(", "score": 70, "category": "code_injection" },
+    { "word": "subprocess", "score": 65, "category": "code_injection" },
+    { "word": "os.system", "score": 75, "category": "code_injection" },
+    { "word": "shell_exec", "score": 75, "category": "code_injection" },
+    { "word": "entire directory", "score": 85, "category": "scope_creep" },
+    { "word": "all files", "score": 70, "category": "scope_creep" },
+    { "word": "list all", "score": 45, "category": "scope_creep" },
+    { "word": "read everything", "score": 80, "category": "scope_creep" },
+    { "word": "full disk", "score": 90, "category": "scope_creep" },
+    { "word": "c:\\", "score": 60, "category": "path_traversal" },
+    { "word": "/etc/passwd", "score": 95, "category": "path_traversal" },
+    { "word": "/etc/shadow", "score": 95, "category": "path_traversal" },
+    { "word": "../", "score": 55, "category": "path_traversal" },
+    { "word": "..\\", "score": 55, "category": "path_traversal" }
+  ],
+
+  "allowed_actions": ["ai_query", "read_file", "web_search", "chat_message"],
+
+  "blocked_actions": [
+    "delete_file",
+    "write_system",
+    "exec_command",
+    "network_scan"
+  ],
+
+  "ai_sites": [
+    "chatgpt.com",
+    "chat.openai.com",
+    "claude.ai",
+    "gemini.google.com",
+    "copilot.microsoft.com",
+    "bard.google.com",
+    "poe.com",
+    "character.ai",
+    "huggingface.co",
+    "perplexity.ai",
+    "you.com",
+    "cohere.ai",
+    "mistral.ai"
+  ],
+
+  "local_ai_ports": [11434, 8080, 1234, 5001, 7860, 3000, 8000],
+
+  "thresholds": {
+    "block_score": 50,
+    "high_risk_score": 80,
+    "max_body_scan_kb": 512,
+    "max_messages_scan": 50
+  },
+
+  "scope_rules": {
+    "enabled": true,
+    "max_files_per_request": 5,
+    "forbidden_path_patterns": [
+      "/../",
+      "/..",
+      "/etc/",
+      "/proc/",
+      "/sys/",
+      "C:\\Windows",
+      "C:\\Users",
+      "%APPDATA%",
+      "/root/",
+      "/home/",
+      "~/"
+    ],
+    "allowed_extensions": [
+      ".txt",
+      ".md",
+      ".pdf",
+      ".csv",
+      ".json",
+      ".py",
+      ".js",
+      ".ts",
+      ".rs",
+      ".go",
+      ".html",
+      ".css",
+      ".yaml",
+      ".toml"
+    ]
+  },
+
+  "behavioral": {
+    "enabled": true,
+    "max_prompt_length": 4000,
+    "max_tokens_per_minute": 8000,
+    "max_requests_per_minute": 30,
+    "repeated_block_threshold": 3
+  }
+}

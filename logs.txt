@@ -754,3 +754,241 @@ $6a7b6214-05b7-4285-9cfe-4e6208e8ee0a  (ñ§ûçÔ30ð§ûçÔ3:SIJpnFTWrySAKubV
 http://example.com/password((:en-USJ | Risk: 50 | Suspicious: true | Decision: BLOCK
 [MITM] URL: http://example.com/password | Body:  | Risk: 50 | Suspicious: true | Decision: BLOCK
 [MITM] URL: https://browser-intake-us5-datadoghq.com/api/v2/rum?ddsource=browser&dd-api-key=pub71869dceb5b70dba6123af9ca357d1f9&dd-evp-origin-version=6.31.0&dd-evp-origin=browser&dd-request-id=433f16ef-90a8-4720-9e61-aab49af6e4b2&batch_time=1775113494312&_dd.api=fetch | Body: {"type":"view","_dd":{"format_version":2,"drift":0,"configuration":{"session_sample_rate":100,"session_replay_sample_rate":0,"profiling_sample_rate":0,"trace_sample_rate":100,"beta_encode_cookie_options":false,"start_session_replay_recording_manually":true},"sdk_name":"rum","page_states":[{"state":"active","start":-638500000},{"state":"passive","start":3244900000},{"state":"hidden","start":3307000000},{"state":"passive","start":81453800000},{"state":"active","start":81604300000},{"state":"passive","start":110709400000},{"state":"hidden","start":112340200000},{"state":"active","start":767481700000},{"state":"passive","start":791033400000},{"state":"hidden","start":870125900000},{"state":"active","start":965165600000},{"state":"passive","start":970953300000},{"state":"active","start":989962100000},{"state":"passive","start":992973600000},{"state":"active","start":1077875500000},{"state":"passive","start":1078869700000},{"state":"hidden","start":1100213000000}],"document_version":28},"application":{"id":"df447632-9210-4ee5-a49a-348e4fa17665"},"date":1775111962405,"source":"browser","view":{"url":"https://claude.ai/chat/d60a5f19-e8c6-4887-86c0-ee965c8bc569","referrer":"https://claude.ai/chat/d60a5f19-e8c6-4887-86c0-ee965c8bc569","id":"bea6aa76-4c06-453d-b021-d35e3b0f1e66","name":"/chat/$uuid","action":{"count":0},"frustration":{"count":0},"cumulative_layout_shift":0,"error":{"count":1},"interaction_to_next_paint":64000000,"interaction_to_next_paint_time":989962800000,"interaction_to_next_paint_target_selector":"#main-content>DIV.flex>DIV.h-full>DIV.overflow-y-auto>DIV.relative","is_active":true,"loading_time":1055000000,"loading_type":"route_change","long_task":{"count":41},"performance":{"cls":{"score":0},"inp":{"duration":64000000,"timestamp":989962800000,"target_selector":"#main-content>DIV.flex>DIV.h-full>DIV.overflow-y-auto>DIV.relative"}},"resource":{"count":7},"time_spent":1500900000000},"session":{"id":"88c47e4f-b2aa-4cfb-a6a9-403c60a3688f","type":"user","sampled_for_replay":false},"connectivity":{"status":"connected","effective_type":"4g"},"usr":{"anonymous_id":"0b1d48f8-60d2-45b3-8e44-bef9a3771aa2"},"display":{"viewport":{"width":1280,"height":585.3333129882812},"scroll":{"max_depth":585,"max_depth_scroll_top":0,"max_scroll_height":585,"max_scroll_height_time":1051100000}},"service":"claude-ai","version":"cd5ca868b5","privacy":{"replay_level":"mask"},"device":{"locale":"en-IN","locales":["en-IN","en-GB","en-US","en","ml"],"time_zone":"Asia/Calcutta"},"ddtags":"sdk_version:6.31.0,env:production,service:claude-ai,version:cd5ca868b5"} | Risk: 0 | Suspicious: false | Decision: ALLOW
+App:cli_user | Risk:280 | Categories:prompt_injection,jailbreak | Decision:BLOCKED
+App:cli_user | Risk:55 | Categories:credential | Decision:BLOCKED
+App:cli_user | Risk:215 | Categories:credential,path_traversal | Decision:BLOCKED
+App:test_runner | Risk:0 | Categories: | Decision:ALLOWED
+App:test_runner | Risk:100 | Categories:forbidden_action | Decision:BLOCKED
+App:test_runner | Risk:110 | Categories:credential | Decision:BLOCKED
+App:test_runner | Risk:185 | Categories:prompt_injection,jailbreak | Decision:BLOCKED
+App:test_runner | Risk:370 | Categories:path_traversal,exfiltration,scope_creep,credential | Decision:BLOCKED
+App:test_runner | Risk:85 | Categories:scope_creep | Decision:BLOCKED
+App:test_runner | Risk:60 | Categories:evasion | Decision:BLOCKED
+App:test_runner | Risk:130 | Categories:prompt_injection | Decision:BLOCKED
+App:test_runner | Risk:45 | Categories:credential | Decision:ALLOWED
+[Engine] URL=http://ipv6.msftconnecttest.com/connecttest.txt | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=http://www.msftconnecttest.com/connecttest.txt | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=http://ipv6.msftconnecttest.com/connecttest.txt | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=http://www.msftconnecttest.com/connecttest.txt | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://browser-intake-us5-datadoghq.com/api/v2/rum?ddsource=browser&dd-api-key=pub71869dceb5b70dba6123af9ca357d1f9&dd-evp-origin-version=6.31.0&dd-evp-origin=browser&dd-request-id=817eedca-e312-4810-a2ca-9260c4671f4c&batch_time=1775197714167&_dd.api=fetch | Risk=7 | Decision=ALLOW | Reasons: Prompt length 7839 > max 4000 (+7)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://browser-intake-us5-datadoghq.com/api/v2/rum?ddsource=browser&dd-api-key=pub71869dceb5b70dba6123af9ca357d1f9&dd-evp-origin-version=6.31.0&dd-evp-origin=browser&dd-request-id=30fd203f-920e-431a-acf5-5f525f5f2d7b&batch_time=1775197765930&_dd.api=beacon | Risk=17 | Decision=ALLOW | Reasons: Prompt length 12774 > max 4000 (+17)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 12.6% non-ASCII chars (+25)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=&oit=0&oft=1&url=http%3A%2F%2Flocalhost%3A9091%2F&pgcl=4&gs_rn=42&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://browser-intake-us5-datadoghq.com/api/v2/rum?ddsource=browser&dd-api-key=pub71869dceb5b70dba6123af9ca357d1f9&dd-evp-origin-version=6.31.0&dd-evp-origin=browser&dd-request-id=81e18437-53a3-49a5-88ff-c9292d48d49a&batch_time=1775197796091&_dd.api=fetch | Risk=11 | Decision=ALLOW | Reasons: Prompt length 9984 > max 4000 (+11)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 15.0% non-ASCII chars (+25)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.google.com/async/ddljson?async=ntp:2 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.google.com/async/newtab_ogb?hl=en-US&async=fixed:0 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://www.google.com/async/newtab_promos | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=&oit=0&gs_rn=42&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=&oit=0&oft=1&pgcl=7&gs_rn=42&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=c&oit=1&cp=1&pgcl=7&gs_rn=42&psi=NoiTIxLkX5p_4TCO&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=11 | Decision=ALLOW | Reasons: Prompt length 9803 > max 4000 (+11)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=ch&oit=1&cp=2&pgcl=7&gs_rn=42&psi=NoiTIxLkX5p_4TCO&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=cha&oit=1&cp=3&pgcl=7&gs_rn=42&psi=NoiTIxLkX5p_4TCO&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=6 | Decision=ALLOW | Reasons: Prompt length 7352 > max 4000 (+6)
+[Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=chat&oit=1&cp=4&pgcl=7&gs_rn=42&psi=NoiTIxLkX5p_4TCO&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://accounts.google.com/RotateBoundCookies | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/ | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSytYL8D79k7rL5RHKHHbNmxECrqKZkhRdaAlw_mmE&s | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=11 | Decision=ALLOW | Reasons: Prompt length 9803 > max 4000 (+11)
+[Engine] URL=https://accounts.google.com/RotateBoundCookies | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://ogads-pa.clients6.google.com/$rpc/google.internal.onegoogle.asyncdata.v1.AsyncDataService/GetAsyncData | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://play.google.com/log?format=json&hasfast=true&authuser=0 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/root-e6ibu6g5.css | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://optimizationguide-pa.googleapis.com/v1:GetHints? | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/conversation-small-mcws6i9l.css | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/manifest-c6a067df.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/85c26ade-ktmd8jq2o3pkyi7c.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://chatgpt.com/cdn/assets/93527649-jfnr2i9x9uenk76l.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/966cd1fb-fd3tfl2ovl2cam2k.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://lh3.googleusercontent.com/a/ACg8ocJLgpbWROYrxPDi1c81hzLZo8qbLFSs76mj_8vwYfHTBJX66A=s96-c | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=21 | Decision=ALLOW | Reasons: Prompt length 14705 > max 4000 (+21)
+[Engine] URL=https://chatgpt.com/cdn/assets/4813494d-jltiado9d09syz1y.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/47edf3d1-e40worils912sf1p.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/1a7ebd5f-m8q9c9ekdny4a44f.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/97587f90-jya4t544wq8aqhor.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/ecba71b4-jqsxy04venbew813.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/52022a5f-l0cj3fagu0x6920p.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/84e8f385-ic6u7sxkng04y847.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/7f00cfec-ok7w2yb9x4l04c8l.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/b9ebfa06-ipm1gli4bgi4gsgx.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/1e924491-g6ao4lg5ogwh8b9o.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/e9c129e0-edy5j6dzeoumt9kj.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/1374e329-j9b1qy7csuqkdtfx.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/8a0ea239-nzj45npa87jhdnsp.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/e21b3b3f-bvxxc66m9nt50lzu.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=21 | Decision=ALLOW | Reasons: Prompt length 14705 > max 4000 (+21)
+[Engine] URL=https://chatgpt.com/cdn/assets/9bee0952-hmqb8yufi129ujtc.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/1bc04b52-kc4y4dacb5c38b02.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/929b8f98-l3to79ps54ubq9p4.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/d5b1a7e0-kbk4ydsezkf5pbf5.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/c41e33f5-lu525l15i7fbzodg.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/48fd09b9-ddntzjukjubp9l19.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/5ab0a184-fx1tvjs4ns15qc4p.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/5373c7f8-lehbcija1hhc4831.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/5ff05818-fy7mze2emive3lzu.js | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/cdn/assets/52878ea3-fkoqwh2h8hbljg21.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 31 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/416006a5-ga3ovg0uirr4veqy.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 32 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/d70d5a79-a6noxqozb0ngh4bx.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 33 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/6fd89734-mdep4ueiut4d3ij1.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 34 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/26c0a75b-dpcvmhpa2hxg6jwg.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 35 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/b81d67c1-fe7rkwpsckj81saq.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 36 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/db62250d-cua8365k1680ebrz.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 37 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/089c718c-n5fjhvg88btgq7on.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 38 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/dbb95ee5-mvqj0vja1qnarvv4.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 39 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/9ed9a415-cgv6ikw1at0e39ka.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 40 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/28938d3c-fshjyv0d2gunq2ce.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 41 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/6b0acf80-ffwr2z757vj6w1yg.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 42 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/37827fd8-m3hesuu9gfqmp6tf.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 43 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/53ae691e-mlphpyxtp1h5y3y6.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 44 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/07d15c0a-dg38k8aqdabedbv5.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 45 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/de6c4a91-m1ahksu516cj21du.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 46 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/20b859e0-e678u6abl0f6hxug.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 47 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn/assets/677acd42-conlmkuymed07paj.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 48 requests/min (max 30) (+40)
+[Engine] URL=https://chatgpt.com/cdn-cgi/challenge-platform/scripts/jsd/main.js | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 49 requests/min (max 30) (+40)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=40 | Decision=ALLOW | Reasons: Prompt length 24509 > max 4000 (+40)
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 16.1% non-ASCII chars (+25)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://chatgpt.com/cdn-cgi/challenge-platform/h/g/scripts/jsd/ea2d291c0fdc/main.js? | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 50 requests/min (max 30) (+40)
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=1 | Decision=ALLOW | Reasons: Prompt length 4901 > max 4000 (+1)
+[Engine] URL=https://chatgpt.com/cdn-cgi/challenge-platform/h/g/jsd/oneshot/ea2d291c0fdc/0.901068746181995:1775195145:LXKXdWHprM9XvVEqonKvmZEQHyRyGqtEKGZH0h6z68A/9e66066e69622266 | Risk=66 | Decision=BLOCK | Reasons: Prompt length 17183 > max 4000 (+26)
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 12.7% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197874084&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197888084&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 12.7% non-ASCII chars (+25)
+[Engine] URL=https://main.vscode-cdn.net/extensions/marketplace.json | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://google.com/domainreliability/upload | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://beacons.gcp.gvt2.com/domainreliability/upload | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://mobile.events.data.microsoft.com/OneCollector/1.0?cors=true&content-type=application/x-json-stream | Risk=80 | Decision=BLOCK | Reasons: Keyword 'ssn' (+80)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197874084&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197888084&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197904083&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197914134&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=100&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197914135&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=100&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197914136&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=31&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197914135&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=100&gz=1 | Risk=11 | Decision=ALLOW | Reasons: Prompt length 9803 > max 4000 (+11)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197914136&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=31&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://statsigapi.net/v1/sdk_exception | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197914134&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=100&gz=1 | Risk=12 | Decision=ALLOW | Reasons: Prompt length 10046 > max 4000 (+12)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197904083&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://statsigapi.net/v1/sdk_exception | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 12.0% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197917208&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197917208&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197918085&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=75&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197918085&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=75&gz=1 | Risk=8 | Decision=ALLOW | Reasons: Prompt length 8294 > max 4000 (+8)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197919777&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=12&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197919777&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=12&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197928916&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=3&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197928916&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=3&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197929413&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=27&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197929413&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=27&gz=1 | Risk=0 | Decision=ALLOW | Reasons: Prompt length 4048 > max 4000 (+0)
+[Engine] URL=https://ws.chatgpt.com/p17/ws/user/user-vgoIsRQpH8tn4kA0nHgrJTFH?verify=1775197924-kEogAsSen%252BWZiUuEmG1TZUYNe0yCd6rtOU%252FghTw%252Bw4c%253D | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 10.8% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197936673&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197936673&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197961116&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197961116&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://beacons.gcp.gvt2.com/domainreliability/upload | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://google.com/domainreliability/upload | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197964026&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197964026&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197964580&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=2&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197964580&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=2&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197967750&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=4&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197967750&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=4&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197968481&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=56&gz=1 | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 31 requests/min (max 30) (+40)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197968481&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=56&gz=1 | Risk=43 | Decision=ALLOW | Reasons: Prompt length 5848 > max 4000 (+3)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197973419&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=2&gz=1 | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 33 requests/min (max 30) (+40)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197973419&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=2&gz=1 | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 34 requests/min (max 30) (+40)
+[Engine] URL=https://optimizationguide-pa.googleapis.com/v1:GetHints? | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197974342&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=16&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197974400&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=2&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 13.8% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197974342&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=16&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197974400&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=2&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197975552&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=6&gz=1 | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 31 requests/min (max 30) (+40)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775197975552&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=6&gz=1 | Risk=40 | Decision=ALLOW | Reasons: Rate limit: 32 requests/min (max 30) (+40)
+[Engine] URL=https://oauthaccountmanager.googleapis.com/v1/issuetoken | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://oauthaccountmanager.googleapis.com/v1/issuetoken | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://oauthaccountmanager.googleapis.com/v1/issuetoken | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://oauthaccountmanager.googleapis.com/v1/issuetoken | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://www.googleapis.com/oauth2/v1/userinfo | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://accountcapabilities-pa.googleapis.com/v1/accountcapabilities:batchGet | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 11.3% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198043252&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198043252&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198046030&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198046030&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 10.1% non-ASCII chars (+25)
+[Engine] URL=https://browser-intake-us5-datadoghq.com/api/v2/rum?ddsource=browser&dd-api-key=pub71869dceb5b70dba6123af9ca357d1f9&dd-evp-origin-version=6.31.0&dd-evp-origin=browser&dd-request-id=e24bc999-66d8-4223-b459-f7bcc01ddb7c&batch_time=1775198071100&_dd.api=fetch | Risk=7 | Decision=ALLOW | Reasons: Prompt length 7963 > max 4000 (+7)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198073587&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198073587&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198074537&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198074537&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 11.9% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198109838&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198109838&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198110742&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198110742&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 10.8% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198119170&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198119170&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198128539&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198128539&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=5&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 11.9% non-ASCII chars (+25)
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198135188&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://ab.chatgpt.com/v1/rgstr?k=client-nb0qtYlZuy2tCMN5s5ncnuIBCJncjRViT0IzFm7GqST&st=javascript-client&sv=3.32.2&t=1775198135188&sid=04950d57-71f3-413e-847e-d767469d0b5b&ec=1&gz=1 | Risk=0 | Decision=ALLOW | Reasons: none

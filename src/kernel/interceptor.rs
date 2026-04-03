@@ -1,52 +1,38 @@
 use crate::types::AIRequest;
 use crate::security::policy::check_permission;
 use crate::security::risk::calculate_risk;
+use crate::security::rules_loader::get_rules;
 use crate::ai::analyzer::analyze_prompt;
 use crate::utils::logger::log_event;
 
 pub fn intercept(request: AIRequest) {
     println!("\n=== Zero Trust Engine ===");
 
-    let allowed = check_permission(&request);
-    let risk = calculate_risk(&request);
+    let rules      = get_rules();
+    let allowed    = check_permission(&request);
+    let risk_res   = calculate_risk(&request);
+    let suspicious = request.prompt.as_deref().map(analyze_prompt).unwrap_or(false);
+    let total_risk = risk_res.score;
 
-    let mut suspicious = false;
-
-    if let Some(prompt) = &request.prompt {
-        suspicious = analyze_prompt(prompt);
-    }
-
-    let mut is_ai = false;
-    if let Some(prompt) = &request.prompt {
-        if prompt.contains("chat") || prompt.contains("ai") {
-            is_ai = true;
+    let decision = if !allowed || total_risk >= rules.thresholds.block_score || suspicious {
+        println!("[BLOCKED] risk={} categories={:?}", total_risk, risk_res.categories);
+        for r in &risk_res.reasons {
+            println!("  * {}", r);
         }
-    }
-
-    let decision: &str;
-
-    if !allowed || risk > 50 || suspicious {
-        println!("[BLOCKED ❌] Sent to approval queue");
-
         crate::utils::state::BLOCKED_REQUESTS
-            .lock()
-            .unwrap()
+            .lock().unwrap()
             .push(request.clone());
-
-        decision = "BLOCKED";
-
+        "BLOCKED"
     } else {
-        println!("[ALLOWED ✅]");
-        decision = "ALLOWED";
-    }
+        println!("[ALLOWED] risk={}", total_risk);
+        "ALLOWED"
+    };
 
-    println!("Decision: {}", decision);
-    println!("AI Traffic: {}", is_ai);
-
-    let log = format!(
-        "App: {} | Prompt: {:?} | Risk: {} | Decision: {}",
-        request.app_id, request.prompt, risk, decision
-    );
-
-    log_event(&log);
+    log_event(&format!(
+        "App:{} | Risk:{} | Categories:{} | Decision:{}",
+        request.app_id,
+        total_risk,
+        risk_res.categories.join(","),
+        decision
+    ));
 }
