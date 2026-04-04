@@ -1142,3 +1142,43 @@ App:test_runner | Risk:45 | Categories:credential | Decision:ALLOWED
 [Engine] URL=https://chatgpt.com/backend-api/conversation/69cf5f0c-1674-8322-ae6e-87ace9005f89/stream_status | Risk=0 | Decision=ALLOW | Reasons: none
 [Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=&oit=0&gs_rn=42&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
 [Engine] URL=https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=&oit=0&oft=1&url=https%3A%2F%2Fchatgpt.com%2Fc%2F69cf5f0c-1674-8322-ae6e-87ace9005f89&pgcl=4&gs_rn=42&sugkey=AIzaSyA2KlwBX3mkFo30om9LUFYQhpqLoa_BNhE | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=33 | Decision=ALLOW | Reasons: Prompt length 8041 > max 4000 (+8)
+[Engine] URL=https://accounts.google.com/RotateBoundCookies | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://accounts.google.com/RotateBoundCookies | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=25 | Decision=ALLOW | Reasons: Possible homoglyph evasion: 12.1% non-ASCII chars (+25)
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://clients4.google.com/chrome-sync/command/?client=Google+Chrome&client_id=IJpnFTWrySAKubVqzJswug%3D%3D | Risk=85 | Decision=BLOCK | Reasons: Keyword 'password' (+60)
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/f/conversation/prepare | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/conversation/experimental/generate_autocompletions | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/f/conversation | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/sentinel/chat-requirements/prepare | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://a.nel.cloudflare.com/report/v4?s=onGZXaza%2B99cRJfjSSrq6IsAZfHHJk%2FmyHwT6mKEYAQyCD%2BNX%2Bmg3luE1Xkcv2e8mMMDcb3l%2Bw06ltxX2Fyr83hq%2Brdt1NFTg0FXk7fajQqfzBVtsnDXEZpxMIue | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/f/conversation/prepare | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/conversation/experimental/generate_autocompletions | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://a.nel.cloudflare.com/report/v4?s=onGZXaza%2B99cRJfjSSrq6IsAZfHHJk%2FmyHwT6mKEYAQyCD%2BNX%2Bmg3luE1Xkcv2e8mMMDcb3l%2Bw06ltxX2Fyr83hq%2Brdt1NFTg0FXk7fajQqfzBVtsnDXEZpxMIue | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/sentinel/chat-requirements/finalize | Risk=6 | Decision=ALLOW | Reasons: Prompt length 7229 > max 4000 (+6)
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/conversations?offset=0&limit=28&order=updated&is_archived=false&is_starred=false | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/pins?limit=10&item_type=conversation | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/conversation/69d0a7d2-9450-8323-bd67-2bf33902524d/stream_status | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/gizmos/g-p-6958ddc34054819194125cb50eb47de2/conversations?cursor=0 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/gizmos/g-p-6922d4e05d2881918387ef07beb594ce/conversations?cursor=0 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/gizmos/g-p-6935166bcd288191aaa197815a034158/conversations?cursor=0 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/gizmos/g-p-6922043e00588191a4cea4b0f774efe0/conversations?cursor=0 | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/conversation/69d0a7d2-9450-8323-bd67-2bf33902524d/textdocs | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/conversations?offset=0&limit=28&order=updated&is_archived=false&is_starred=false | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://optimizationguide-pa.googleapis.com/v1:GetHints? | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/pins?limit=10&item_type=conversation | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/f/conversation/prepare | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://main.vscode-cdn.net/extensions/marketplace.json | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/aip/connectors/links/list_accessible | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/f/conversation/prepare | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/f/conversation/prepare | Risk=0 | Decision=ALLOW | Reasons: none
+[Engine] URL=https://chatgpt.com/backend-api/f/conversation/prepare | Risk=190 | Decision=BLOCK | Reasons: Keyword 'dan mode' (+95)

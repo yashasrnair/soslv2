@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Zero Trust AI Firewall v5</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#e0e0e0;
+         width:280px;padding:18px}
+    h2{color:#00ffcc;font-size:1rem;margin-bottom:8px}
+    .sub{color:#444;font-size:.72rem;margin-bottom:14px}
+    .status{display:flex;align-items:center;gap:8px;
+            background:#141414;border-radius:8px;padding:10px 14px;margin-bottom:12px}
+    .dot{width:9px;height:9px;border-radius:50%;background:#333;flex-shrink:0}
+    .dot.on{background:#2ecc71;box-shadow:0 0 6px #2ecc71}
+    .dot.off{background:#e74c3c}
+    .stxt{font-size:.82rem;color:#aaa}
+    .btn{display:block;width:100%;padding:9px;background:#00ffcc;color:#000;
+         border:none;border-radius:7px;font-weight:bold;font-size:.85rem;
+         cursor:pointer;text-align:center;text-decoration:none;margin-bottom:8px}
+    .btn2{background:#1a1a1a;color:#888;border:1px solid #222}
+    .stat{background:#141414;border-radius:6px;padding:8px 12px;margin-bottom:6px;
+          display:flex;justify-content:space-between;font-size:.78rem}
+    .stat span:first-child{color:#555}
+    .stat span:last-child{color:#aaa;font-weight:bold}
+    .footer{margin-top:12px;color:#333;font-size:.68rem;text-align:center}
+  </style>
+</head>
+<body>
+  <h2>&#x1F6E1; Zero Trust AI Firewall</h2>
+  <div class="sub">v5 — Chrome Extension</div>
+
+  <div class="status">
+    <div class="dot" id="dot"></div>
+    <span class="stxt" id="stxt">Checking firewall...</span>
+  </div>
+
+  <div id="stats">
+    <div class="stat"><span>Ext inputs captured</span><span id="extcnt">—</span></div>
+    <div class="stat"><span>WS flags</span><span id="wscnt">—</span></div>
+    <div class="stat"><span>Pending</span><span id="pcnt">—</span></div>
+  </div>
+
+  <br>
+  <a class="btn" href="http://localhost:9091" target="_blank">
+    &#x1F4CA; Open Dashboard
+  </a>
+  <a class="btn btn2" href="http://localhost:9091/recent-logs" target="_blank">
+    &#x1F4DD; View Logs
+  </a>
+
+  <div class="footer">
+    Firewall runs at localhost:9091<br>
+    MITM proxy on port 8080 (mitmproxy)
+  </div>
+
+<script>
+async function check(){
+  try{
+    const [pe,we,ee]=await Promise.all([
+      fetch('http://localhost:9091/pending').then(r=>r.json()),
+      fetch('http://localhost:9091/ws-flags').then(r=>r.json()),
+      fetch('http://localhost:9091/ext-inputs').then(r=>r.json()),
+    ]);
+    document.getElementById('dot').className='dot on';
+    document.getElementById('stxt').textContent='Firewall connected ✓';
+    document.getElementById('pcnt').textContent=pe.length;
+    document.getElementById('wscnt').textContent=we.length;
+    document.getElementById('extcnt').textContent=ee.length;
+  }catch(e){
+    document.getElementById('dot').className='dot off';
+    document.getElementById('stxt').textContent='Firewall offline — start run_mitm.bat';
+  }
+}
+check();
+</script>
+</body>
+</html>
